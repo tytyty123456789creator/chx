@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SellBox v1.7.1 服主使用教程</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --ink:#10140e;
+    --soil:#191f15;
+    --soil-2:#212a1b;
+    --line:#39432f;
+    --wheat:#d5b264;
+    --wheat-soft:#e6ce94;
+    --grass:#88a562;
+    --paper:#efe9db;
+    --paper-dim:#b5b0a0;
+    --warn:#c4793f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-padding-top:76px}
+  body{
+    background:
+      radial-gradient(1100px 520px at 82% -6%, rgba(213,178,100,.10), transparent 62%),
+      radial-gradient(800px 460px at 8% 102%, rgba(136,165,98,.08), transparent 66%),
+      var(--ink);
+    color:var(--paper);
+    font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 26px}
+  h1,h2,h3,.num{font-family:"Noto Serif SC",Georgia,"Songti SC",serif}
+  .mono{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+
+  nav{position:sticky;top:0;z-index:20;background:rgba(16,20,14,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  nav .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.05em;font-size:15px}
+  nav .brand i{width:8px;height:8px;background:var(--wheat);display:inline-block;transform:rotate(45deg)}
+  nav ul{display:flex;gap:18px;list-style:none;font-size:13px;color:var(--paper-dim)}
+  nav ul a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px}
+  nav ul a:hover{color:var(--wheat);border-color:var(--wheat)}
+  @media(max-width:840px){nav ul{display:none}}
+
+  header{padding:76px 0 54px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-size:11.5px;letter-spacing:.18em;color:var(--grass);margin-bottom:14px}
+  h1{font-size:clamp(30px,4.6vw,50px);line-height:1.22;font-weight:700}
+  h1 span{color:var(--wheat)}
+  .lede{margin-top:20px;max-width:680px;font-size:16.5px;color:var(--paper-dim);font-weight:300}
+  .facts{display:flex;flex-wrap:wrap;gap:30px;margin-top:42px;padding-top:24px;border-top:1px solid var(--line)}
+  .fact .num{font-size:22px;color:var(--wheat);font-weight:600}
+  .fact .cap{font-size:12px;color:var(--paper-dim);margin-top:2px}
+
+  .callout{
+    margin-top:26px;border-left:2px solid var(--wheat);background:rgba(213,178,100,.06);
+    padding:14px 18px;font-size:13.5px;color:var(--paper-dim);max-width:760px;
+  }
+  .callout b{color:var(--wheat-soft);font-weight:600}
+
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:clamp(22px,2.9vw,30px);font-weight:700;line-height:1.35;margin-bottom:12px}
+  .sub{color:var(--paper-dim);max-width:720px;font-weight:300;font-size:15.5px}
+  .who{font-size:12px;letter-spacing:.16em;color:var(--grass);margin-bottom:12px}
+
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:30px}
+  .fx{background:var(--soil);padding:20px 18px}
+  .fx .n{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--wheat)}
+  .fx p{font-size:13.5px;color:var(--paper-dim);margin-top:8px}
+  @media(max-width:900px){.flow{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.flow{grid-template-columns:1fr}}
+
+  .tabs{display:flex;gap:6px;margin-top:26px;flex-wrap:wrap}
+  .tab{
+    background:transparent;color:var(--paper-dim);border:1px solid var(--line);
+    padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;transition:.15s;
+  }
+  .tab.on{background:var(--soil-2);color:var(--wheat);border-color:var(--wheat)}
+  .panel{display:none}
+  .panel.on{display:block}
+  .table-scroll{overflow-x:auto;margin-top:16px}
+  .cmd-table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+  .cmd-table th,.cmd-table td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  .cmd-table th{font-size:11.5px;letter-spacing:.1em;color:var(--grass);font-weight:500}
+  .cmd-table td.cmd{font-family:"JetBrains Mono",monospace;font-size:12.6px;color:var(--wheat-soft);white-space:nowrap}
+  .cmd-table td.cmd .arg{color:#77826a}
+  .cmd-table td.desc{color:var(--paper-dim)}
+  .cmd-table tr:hover td{background:rgba(33,42,27,.5)}
+  .perm{font-size:11.5px;color:#77826a;font-family:"JetBrains Mono",monospace}
+
+  .mech{margin-top:30px;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .m{background:var(--soil);padding:24px;display:grid;grid-template-columns:120px 1fr;gap:22px}
+  .m .k{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--grass);letter-spacing:.08em}
+  .m h3{font-size:17px;margin-bottom:8px}
+  .m p{font-size:14px;color:var(--paper-dim)}
+  .m .fx-line{margin-top:10px;font-family:"JetBrains Mono",monospace;font-size:12.4px;color:var(--wheat-soft)}
+  @media(max-width:760px){.m{grid-template-columns:1fr;gap:8px}}
+
+  .formula{
+    margin-top:22px;border:1px solid var(--line);background:#0c100a;padding:14px 18px;
+    font-family:"JetBrains Mono",monospace;font-size:12.6px;color:#cbd2c0;overflow-x:auto;white-space:nowrap;
+  }
+  .formula b{color:var(--wheat)}
+
+  .cond-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:28px}
+  .cond{background:var(--soil);padding:22px 20px}
+  .cond .tag{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--wheat);letter-spacing:.08em}
+  .cond h3{font-size:16px;margin:7px 0 8px}
+  .cond p{font-size:13.5px;color:var(--paper-dim)}
+  .cond code{display:block;margin-top:10px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--wheat-soft);word-break:break-all}
+  @media(max-width:800px){.cond-grid{grid-template-columns:1fr}}
+
+  pre{margin-top:20px;background:#0c100a;border:1px solid var(--line);padding:16px 18px;overflow:auto;font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.9;color:#cbd2c0}
+  pre b{color:var(--wheat);font-weight:600}
+  pre i{color:#6a775c;font-style:normal}
+  pre .cm{color:#6a775c}
+
+  .rules{margin-top:24px;border-top:1px solid var(--line)}
+  .rule{display:grid;grid-template-columns:170px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .rule .rk{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--grass)}
+  .rule .rv{color:var(--paper-dim)}
+  @media(max-width:640px){.rule{grid-template-columns:1fr;gap:3px}}
+
+  .sim{margin-top:28px;border:1px solid var(--line);background:var(--soil)}
+  .sim-head{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--paper-dim)}
+  .sim-body{display:grid;grid-template-columns:320px 1fr}
+  .sim-form{padding:20px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px}
+  label{font-size:12.5px;color:var(--paper-dim);display:block;margin-bottom:5px}
+  select,input[type=number]{width:100%;background:var(--soil-2);color:var(--paper);border:1px solid var(--line);padding:8px 10px;font-size:14px;font-family:inherit;outline:none}
+  select:focus,input:focus{border-color:var(--wheat)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--paper-dim)}
+  .chk input{width:15px;height:15px;accent-color:var(--wheat)}
+  .sim-note{margin-top:2px;font-size:12.5px;color:var(--paper-dim);border-left:2px solid var(--line);padding-left:12px}
+  .sim-out{padding:20px;display:flex;flex-direction:column;min-width:0}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:18px}
+  .chip{background:var(--soil-2);padding:12px 14px}
+  .chip .cl{font-size:11px;letter-spacing:.1em;color:var(--grass)}
+  .chip .cv{font-family:"JetBrains Mono",monospace;font-size:17px;color:var(--wheat);margin-top:3px}
+  .chip .cv.small{font-size:13px;line-height:1.6}
+  .tier-table{width:100%;border-collapse:collapse;font-size:13px}
+  .tier-table th{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.08em;color:var(--grass);font-weight:500}
+  .tier-table td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--paper-dim)}
+  .tier-table tr.cur td{background:rgba(213,178,100,.07);color:var(--paper)}
+  .tier-table .nm{color:var(--paper);font-weight:500}
+  .tier-table .amt{font-family:"JetBrains Mono",monospace;color:var(--wheat-soft);white-space:nowrap}
+  .tier-table .cd{font-size:12px;line-height:1.7}
+  .tier-table .cd span{display:block}
+  .cond-hint{color:#6a775c;font-size:11px;letter-spacing:.04em;margin-bottom:3px}
+  .status{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;padding:2px 6px;border:1px solid var(--line);white-space:nowrap;display:inline-block}
+  .st-pass{color:var(--grass);border-color:rgba(136,165,98,.45)}
+  .st-fail{color:var(--warn);border-color:rgba(196,121,63,.45)}
+  .st-skip{color:#6a775c}
+  .st-cur{color:var(--wheat);border-color:rgba(213,178,100,.55)}
+  .sim-note-out{margin-top:14px;font-size:12.5px;color:var(--paper-dim);border-left:2px solid var(--line);padding-left:12px}
+  @media(max-width:880px){.sim-body{grid-template-columns:1fr}.sim-form{border-right:none;border-bottom:1px solid var(--line)}}
+  @media(max-width:560px){.chips{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+
+  .matrix{width:100%;border-collapse:collapse;margin-top:24px;font-size:13.5px;min-width:560px}
+  .matrix th,.matrix td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  .matrix th{font-size:11.5px;letter-spacing:.1em;color:var(--grass);font-weight:500}
+  .matrix td .mono{color:var(--wheat-soft)}
+  .ok{color:var(--grass);font-family:"JetBrains Mono",monospace;font-size:12px}
+  .bad{color:var(--warn);font-family:"JetBrains Mono",monospace;font-size:12px}
+
+  .deploy{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:28px}
+  .d{background:var(--soil);padding:24px 20px}
+  .d .n{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--wheat);letter-spacing:.14em}
+  .d h3{font-size:16px;margin:6px 0 8px}
+  .d p{font-size:13.5px;color:var(--paper-dim)}
+  @media(max-width:860px){.deploy{grid-template-columns:1fr}}
+
+  .deps{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+  .dep{font-family:"JetBrains Mono",monospace;font-size:11.8px;color:var(--paper-dim);border:1px solid var(--line);padding:3px 9px}
+
+  .notice{margin-top:24px;border:1px solid var(--line);background:linear-gradient(180deg,var(--soil-2),var(--soil));padding:18px 20px;font-size:13.5px;color:var(--paper-dim)}
+  .notice b{color:var(--wheat-soft)}
+
+  .faq{margin-top:26px;border-top:1px solid var(--line)}
+  details{border-bottom:1px solid var(--line);padding:18px 0}
+  summary{list-style:none;display:flex;justify-content:space-between;gap:16px;font-size:15px;cursor:pointer;color:var(--paper)}
+  summary::-webkit-details-marker{display:none}
+  summary .pm{color:var(--wheat);font-family:"JetBrains Mono",monospace}
+  details[open] summary .pm{color:var(--grass)}
+  details p{margin-top:10px;font-size:14px;color:var(--paper-dim);max-width:760px}
+
+  footer{padding:56px 0 74px}
+  .box{border:1px solid var(--line);background:linear-gradient(180deg,var(--soil-2),var(--soil));padding:34px 30px}
+  .box h2{margin-bottom:8px}
+  .box p{color:var(--paper-dim);font-size:14.5px;max-width:680px}
+  .foot{margin-top:38px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12px;color:#6a775c}
+
+  .calc{margin-top:28px;border:1px solid var(--line);background:var(--soil)}
+  .calc-head{padding:13px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--paper-dim)}
+  .calc-reset{background:transparent;border:1px solid var(--line);color:var(--paper-dim);font-family:inherit;font-size:11.5px;padding:4px 10px;cursor:pointer}
+  .calc-reset:hover{border-color:var(--wheat);color:var(--wheat)}
+  .calc-presets{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .calc-presets button{background:var(--soil-2);border:1px solid var(--line);color:var(--paper-dim);font-family:inherit;font-size:11px;line-height:1.2;padding:6px 4px;cursor:pointer;white-space:nowrap;text-align:center}
+  .calc-presets button:hover{border-color:var(--wheat);color:var(--wheat)}
+  .calc-presets button.on{background:rgba(200,169,110,.13);border-color:var(--wheat);color:var(--wheat)}
+  .calc-presets button:focus-visible{outline:1px solid var(--wheat);outline-offset:1px}
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+  .calc-card{background:var(--soil);padding:18px 20px;min-width:0}
+  .calc-card h3{font-size:14.5px;color:var(--wheat-soft);margin-bottom:11px;font-family:"Noto Serif SC",Georgia,serif;display:flex;align-items:baseline;gap:8px}
+  .calc-card h3 .k{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--grass);letter-spacing:.08em}
+  .calc-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+  .calc-fields .wide{grid-column:1/-1}
+  .calc-fields label{font-size:11.5px;color:var(--paper-dim);margin-bottom:4px;display:block;line-height:1.5}
+  .cfg{font-family:"JetBrains Mono",monospace;font-size:10px;color:#6a775c;margin-left:3px;white-space:nowrap}
+  .calc input,.calc select{width:100%;background:var(--soil-2);color:var(--paper);border:1px solid var(--line);padding:7px 9px;font-size:13px;font-family:inherit;outline:none}
+  .calc input:focus,.calc select:focus{border-color:var(--wheat)}
+  .calc-note{margin-top:10px;font-size:11.5px;color:#6a775c;line-height:1.7;border-left:2px solid var(--line);padding-left:10px}
+  .calc-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-top:1px solid var(--line)}
+  .calc-stat{background:var(--soil-2);padding:13px 16px;min-width:0}
+  .calc-stat .cl{font-size:10.5px;letter-spacing:.09em;color:var(--grass)}
+  .calc-stat .cv{font-family:"JetBrains Mono",monospace;font-size:17px;color:var(--wheat);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .calc-stat .cs{font-size:11px;color:#6a775c;margin-top:2px}
+  .calc-detail{display:grid;grid-template-columns:1.4fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+  .calc-panel{background:var(--soil);padding:20px;min-width:0}
+  .calc-panel h3{font-size:14px;color:var(--wheat-soft);margin-bottom:11px;font-family:"Noto Serif SC",Georgia,serif}
+  .calc-item{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--grass);font-weight:400}
+  .ladder{width:100%;border-collapse:collapse;font-size:12px;min-width:390px}
+  .ladder th{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.06em;color:var(--grass);font-weight:500}
+  .ladder th:nth-child(2),.ladder th:nth-child(3),.ladder th:nth-child(4){text-align:right}
+  .ladder td{padding:5px 6px;border-bottom:1px solid rgba(57,67,47,.55);color:var(--paper-dim);vertical-align:top}
+  .ladder td:nth-child(2),.ladder td:nth-child(3),.ladder td:nth-child(4){text-align:right}
+  .ladder .nm{color:var(--paper)}
+  .ladder .fac{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--grass);white-space:nowrap}
+  .ladder .num{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--wheat-soft);white-space:nowrap}
+  .ladder tr.total td{border-top:1px solid var(--wheat);border-bottom:none;color:var(--paper);padding-top:8px}
+  .ladder tr.total .num{color:var(--wheat);font-weight:600}
+  .ladder .minus{color:var(--warn)}
+  .calc-kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid rgba(57,67,47,.45);font-size:12.5px}
+  .calc-kv .k{color:var(--paper-dim)}
+  .calc-kv .v{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--wheat-soft);text-align:right;white-space:nowrap}
+  .calc-kv .v.dim{color:var(--paper-dim)}
+  .calc-divider{border-top:1px solid var(--line);margin:14px 0 12px}
+  .calc-warn{margin-top:12px;font-size:12px;line-height:1.7;color:var(--warn);border-left:2px solid var(--warn);padding-left:10px}
+  .calc-ok{margin-top:12px;font-size:12px;line-height:1.7;color:var(--grass);border-left:2px solid var(--grass);padding-left:10px}
+  .calc-next{font-size:12px;line-height:1.9;color:var(--paper-dim)}
+  .calc-next b{color:var(--wheat-soft);font-family:"JetBrains Mono",monospace;font-weight:500}
+  .calc-next .hl{color:var(--wheat)}
+
+  .mb{display:none}
+  .matrix-note{display:none}
+
+  @media(max-width:700px){
+    header{padding:56px 0 44px}
+    h1{font-size:29px}
+    .mb{display:block}
+    .facts{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px}
+    .sim-note{font-size:12px}
+    .formula{white-space:normal;font-size:11.8px;line-height:1.9}
+    pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:10.5px;line-height:1.9}
+    .cmd-table{min-width:0;width:100%}
+    .cmd-table th:nth-child(3),.cmd-table td:nth-child(3){display:none}
+    .cmd-table td.cmd{white-space:normal;word-break:break-word;width:38%;font-size:12px}
+    .cmd-table td.desc{font-size:12.5px}
+    .papi-table thead{display:none}
+    .papi-table tr{display:block;padding:9px 0;border-bottom:1px solid var(--line)}
+    .papi-table td,.papi-table th{display:block;width:auto;border:none;padding:2px 0}
+    .papi-table td.cmd{width:auto;white-space:nowrap;word-break:normal;font-size:12px}
+    .papi-table td.desc{font-size:12.5px}
+    .table-scroll{overflow-x:visible}
+    .matrix{min-width:0}
+    .matrix th:nth-child(4),.matrix td:nth-child(4){display:none}
+    .matrix th,.matrix td{padding:9px 7px;font-size:12.5px}
+    .matrix-note{display:block}
+    .calc-grid{grid-template-columns:1fr}
+    .calc-summary{grid-template-columns:1fr 1fr}
+    .calc-detail{grid-template-columns:1fr}
+    .calc-panel{padding:16px}
+    .calc-card{padding:16px}
+    .ladder{min-width:0;font-size:11px}
+    .ladder th,.ladder td{padding:5px 4px}
+  }
+
+  @media(max-width:700px){
+    .tier-table{display:block;border-collapse:separate}
+    .tier-table thead{display:none}
+    .tier-table tbody{display:block}
+    .tier-table tr{
+      display:grid;grid-template-columns:1fr auto;grid-template-areas:"nm amt" "st st" "cd cd";
+      gap:2px 8px;padding:12px 2px;border-bottom:1px solid var(--line);
+    }
+    .tier-table td{border:none;padding:0}
+    .tier-table td:nth-child(1){display:none}
+    .tier-table td:nth-child(2){grid-area:nm;font-size:15px}
+    .tier-table td:nth-child(3){grid-area:amt;text-align:right;font-size:13px}
+    .tier-table td:nth-child(4){grid-area:st;margin-top:4px}
+    .tier-table td:nth-child(5){grid-area:cd;margin-top:6px;font-size:12.5px}
+    .tier-table tr.cur{background:rgba(213,178,100,.07)}
+    .tier-table tr.cur td{background:transparent}
+  }
+
+  @media(max-width:560px){
+    .chips{grid-template-columns:1fr 1fr}
+    .row2{grid-template-columns:1fr}
+    .calc-fields{grid-template-columns:1fr}
+    .calc-fields .wide{grid-column:auto}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><i></i>SellBox v1.7.1</div>
+    <ul>
+      <li><a href="#howto">怎么用</a></li>
+      <li><a href="#cmds">指令</a></li>
+      <li><a href="#mech">钱怎么算</a></li>
+      <li><a href="#calc">价格试算</a></li>
+      <li><a href="#tiers">档位条件</a></li>
+      <li><a href="#sim">档位模拟</a></li>
+      <li><a href="#deploy">部署</a></li>
+      <li><a href="#faq">问答</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">PAPER 农业经济 · v1.7.1 服主教程</div>
+    <h1>出货箱：把收成<br class="mb"><span>就地卖成钱</span></h1>
+    <p class="lede">
+      玩家在田边放一个箱子，作物投进去，价格按当天行情算，金币到账，出一张收据。
+      v1.7.1 把「卖得多、上限高」做成了可挂条件的一排档位：累计卖出、PAPI 变量、权限节点，想怎么组合就怎么组合。
+    </p>
+    <div class="facts">
+      <div class="fact"><div class="num">Java 21</div><div class="cap">插件字节码版本</div></div>
+      <div class="fact"><div class="num">3 类</div><div class="cap">档位条件来源</div></div>
+      <div class="fact"><div class="num">8 层</div><div class="cap">价格链路</div></div>
+      <div class="fact"><div class="num">全参数</div><div class="cap">价格试算可调</div></div>
+    </div>
+    <div class="callout">
+      <b>先确认 Java 版本：</b>1.7.1 仍是 Java 21 字节码，Paper 1.21.x 与 Paper 26.x 按字节码都能加载；
+      但 <b>Paper 26.2 服务端自身要求 Java 25</b>，不能用 Java 21 启动。1.7.1 另修了 26.2 收据书的 BookMeta API 变更，已在 26.2 build 127 启动验证。
+    </div>
+  </div>
+</header>
+
+<!-- ===== 玩家视角 ===== -->
+<section id="howto">
+  <div class="wrap">
+    <div class="who">玩家视角</div>
+    <h2>用一个箱子卖东西，五步</h2>
+    <p class="sub">这一段可以直接抄进你服的帮助文档。玩家不需要理解档位公式，箱子信息格里能看到自己当前在第几档。</p>
+    <div class="flow">
+      <div class="fx"><div class="n">01</div><p>拿到出货箱。管理员发放，或者按服务器配方合成。</p></div>
+      <div class="fx"><div class="n">02</div><p>放在田边、棚子里、仓库门口。位置随你。</p></div>
+      <div class="fx"><div class="n">03</div><p>蹲下右键绑定。绑定后这个箱子归你，别人动不了。</p></div>
+      <div class="fx"><div class="n">04</div><p>把作物丢进去。已定价的会被收，没定价的留在箱里。</p></div>
+      <div class="fx"><div class="n">05</div><p>等结算。立刻结算当场到账，定时结算到点一起给，附一张收据。</p></div>
+    </div>
+    <p class="sim-note" style="margin-top:16px">
+      想先看行情，打 <span class="mono">/sellbox prices</span>；想看自己为什么还是 5 万/日，打
+      <span class="mono">/sellbox tiers</span>，它会逐档告诉你差哪一条条件。
+    </p>
+  </div>
+</section>
+
+<!-- ===== 指令 ===== -->
+<section id="cmds">
+  <div class="wrap">
+    <div class="who">指令手册</div>
+    <h2>玩家三条，管理员一整套</h2>
+    <p class="sub">主命令 <span class="mono">/sellbox</span>，别名 <span class="mono">/sb</span>。点标签切换分组。</p>
+
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-p="player">玩家</button>
+      <button class="tab" data-p="admin">管理员</button>
+      <button class="tab" data-p="price">价格维护</button>
+      <button class="tab" data-p="debug">调试自测</button>
+    </div>
+
+    <div class="panel on" id="p-player">
+      <div class="table-scroll">
+        <table class="cmd-table">
+          <thead><tr><th>指令</th><th>作用</th><th>权限</th></tr></thead>
+          <tbody>
+            <tr><td class="cmd">/sellbox prices</td><td class="desc">打开今日收购价。按种类排，普通、银星、金星挨在一起，带分页。</td><td class="perm">sellbox.use</td></tr>
+            <tr><td class="cmd">/sellbox tiers</td><td class="desc">查看自己的额度档位：当前在第几档、每个条件过没过、下一档差什么。</td><td class="perm">sellbox.use</td></tr>
+            <tr><td class="cmd">/sellbox help</td><td class="desc">列出所有子命令。</td><td class="perm">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sim-note">玩家其实不需要指令。放箱子、投东西、看界面就够了；<span class="mono">tiers</span> 只是给爱研究经济的玩家看的。流水和待补发查询在「管理员」分组。</p>
+    </div>
+
+    <div class="panel" id="p-admin">
+      <div class="table-scroll">
+        <table class="cmd-table">
+          <thead><tr><th>指令</th><th>作用</th><th>权限</th></tr></thead>
+          <tbody>
+            <tr><td class="cmd">/sellbox give <span class="arg">&lt;玩家&gt; [数量]</span></td><td class="desc">直接给玩家出货箱物品。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox list <span class="arg">&lt;玩家&gt;</span></td><td class="desc">列出这个玩家名下所有箱子，含世界与坐标。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox log <span class="arg">&lt;玩家&gt; [页码]</span></td><td class="desc">查任意玩家的流水。对账、查刷钱、处理纠纷都用这个。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox pending <span class="arg">[玩家]</span></td><td class="desc">查待补发队列。不填玩家就是全服。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox total <span class="arg">&lt;玩家&gt;</span></td><td class="desc">看累计卖出、今日已用、当前档位、日上限与剩余。</td><td class="perm">sellbox.use</td></tr>
+            <tr><td class="cmd">/sellbox total <span class="arg">&lt;玩家&gt; 5000000</span></td><td class="desc">把累计卖出设成 500 万。设的是绝对值，之后继续卖还会往上加。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox total <span class="arg">&lt;玩家&gt; +500000</span></td><td class="desc">在当前基础上加 50 万。带 <span class="mono">+</span>/<span class="mono">-</span> 按增量算，用来补偿或扣罚。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox tiers <span class="arg">&lt;玩家&gt;</span></td><td class="desc">逐档打印条件判定明细，含实际值、失败原因、下一档要求。调 PAPI/权限档必备。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox top <span class="arg">[页数]</span></td><td class="desc">成交排行，按累计净额排。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox reload</td><td class="desc">重载 config、价格表、文案。改完配置打这个，不用重启。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox config check</td><td class="desc">打印当前生效的模块开关与关键参数。排查「为什么没结算」从这开始。</td><td class="perm">sellbox.admin</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sim-note"><span class="mono">total</span> 改的是「累计卖出净额」，也就是条件档位里的 <span class="mono">lifetime</span>。它不动流水日志，只改一个累计值。</p>
+    </div>
+
+    <div class="panel" id="p-price">
+      <div class="table-scroll">
+        <table class="cmd-table">
+          <thead><tr><th>指令</th><th>作用</th><th>权限</th></tr></thead>
+          <tbody>
+            <tr><td class="cmd">/sellbox setprice <span class="arg">&lt;单价&gt;</span></td><td class="desc">给手里的物品定价。写进 prices.yml，立刻生效。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox setprice <span class="arg">&lt;单价&gt; &lt;物品id&gt;</span></td><td class="desc">给指定 id 定价，不用手持。适合批量调某一类作物。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox pricing</td><td class="desc">打开定价表。可搜索、可批量、可排序，比手改 yml 快。</td><td class="perm">sellbox.admin</td></tr>
+            <tr><td class="cmd">/sellbox prices</td><td class="desc">以玩家视角看今日实价，含季节倍率与销量折价。定完价用它自查。</td><td class="perm">sellbox.use</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sim-note">定价口径只留一个：按「玩家一分钟能产出多少金币」定，别按「这东西看起来值多少」定。</p>
+    </div>
+
+    <div class="panel" id="p-debug">
+      <div class="table-scroll">
+        <table class="cmd-table">
+          <thead><tr><th>指令</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td class="cmd">/sellbox debug fill <span class="arg">&lt;x y z&gt; &lt;id&gt; &lt;数量&gt;</span></td><td class="desc">往指定坐标的箱子里塞货。测价格、测结算不用真的去种。</td></tr>
+            <tr><td class="cmd">/sellbox debug sell <span class="arg">&lt;x y z&gt;</span></td><td class="desc">立刻结算这一个箱子。验证「到点会不会真的给钱」。</td></tr>
+            <tr><td class="cmd">/sellbox debug quote <span class="arg">&lt;x y z&gt;</span></td><td class="desc">只算价不结算，打印每件物品的单价与合计。核价用。</td></tr>
+            <tr><td class="cmd">/sellbox debug decay <span class="arg">&lt;id&gt;</span></td><td class="desc">查这个物品今天卖了多少、当前折价系数、全服排名。</td></tr>
+            <tr><td class="cmd">/sellbox debug seasonfactor <span class="arg">&lt;季节&gt; &lt;id&gt;</span></td><td class="desc">查某个物品在某季节的倍率。确认 0.8 / 1.2 到底命中没命中。</td></tr>
+            <tr><td class="cmd">/sellbox debug itemname <span class="arg">&lt;id&gt;</span></td><td class="desc">查这个 id 解析出的显示名。名字显示不对先跑这个。</td></tr>
+            <tr><td class="cmd">/sellbox debug place <span class="arg">&lt;x y z&gt; [owner]</span></td><td class="desc">在指定坐标放一个箱子。补回被误删的箱子用。</td></tr>
+            <tr><td class="cmd">/sellbox debug bind <span class="arg">&lt;x y z&gt; &lt;玩家&gt;</span></td><td class="desc">强制把箱子绑给某个人，处理「箱子没主人」。</td></tr>
+            <tr><td class="cmd">/sellbox debug deposit <span class="arg">&lt;玩家&gt; &lt;金额&gt;</span></td><td class="desc">走经济接口打钱，确认 Vault / XConomy 通路是否正常。</td></tr>
+            <tr><td class="cmd">/sellbox debug paypending <span class="arg">&lt;玩家&gt;</span></td><td class="desc">手动把待补发队列结清。</td></tr>
+            <tr><td class="cmd">/sellbox debug balance <span class="arg">&lt;玩家&gt;</span></td><td class="desc">查余额与待补发笔数。排查「钱没到账」的第二步。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sim-note"><span class="mono">fill</span> 和 <span class="mono">quote</span> 只动箱子/只算价；<span class="mono">sell</span> 走真实结算，会写流水、占玩家当日额度。测试请用小号，别拿主号刷。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 价格链路 ===== -->
+<section id="mech">
+  <div class="wrap">
+    <div class="who">服主视角</div>
+    <h2>一笔结算，经过七层</h2>
+    <p class="sub">知道顺序，调参数时就知道该动哪一层。下面每一层都有独立开关，不用的直接关掉，不会留下 ×1.00 的空行。</p>
+    <div class="formula">
+      基础价 × <b>销量折价</b> × <b>排名折扣</b> × <b>季节倍率</b> × <b>权限倍率</b> × <b>当日卖货折价</b> → 扣税 → 到手价
+    </div>
+    <div class="mech">
+      <div class="m">
+        <div class="k">01 BASE</div>
+        <div>
+          <h3>基础价</h3>
+          <p>prices.yml 里那一条。这是你唯一需要认真定的数字，后面全是修正。</p>
+          <div class="fx-line">items: customcrops:onion: 420</div>
+        </div>
+      </div>
+      <div class="m">
+        <div class="k">02 DECAY</div>
+        <div>
+          <h3>销量折价</h3>
+          <p>同一样东西当天卖得越多，单价越低，到下限为止。折价系数按「本次结算前」的当日销量算，一次结算整批同价；卖完这一批，下一批才按新销量重新折价。count-by 可选全服共享或只按个人算。</p>
+          <div class="fx-line">decay.count-by: global / player　min-factor: 0.70</div>
+        </div>
+      </div>
+      <div class="m">
+        <div class="k">03 RANK</div>
+        <div>
+          <h3>排名折扣</h3>
+          <p>全服销量排名靠前的物品再打一层折。默认关闭，想压「只种一种最赚的作物」时再打开。</p>
+          <div class="fx-line">decay.rank-enabled: false　rank-selection: percent</div>
+        </div>
+      </div>
+      <div class="m">
+        <div class="k">04 SEASON</div>
+        <div>
+          <h3>季节倍率</h3>
+          <p>对接 RealisticSeasons：当季便宜、反季贵。规则支持通配，一条 customcrops:onion* 同时盖住普通、银星、金星。</p>
+          <div class="fx-line">当季 ×0.80　反季 ×1.20　无季节 ×1.00</div>
+        </div>
+      </div>
+      <div class="m">
+        <div class="k">05 MULT</div>
+        <div>
+          <h3>权限倍率</h3>
+          <p>VIP / SVIP 的收购加成。按权限节点匹配，可以叠加，也可以只取最高；op 可以排除在外。</p>
+          <div class="fx-line">sellbox.multiplier.vip → 1.20　svip → 1.50</div>
+        </div>
+      </div>
+      <div class="m">
+        <div class="k">06 VOLUME</div>
+        <div>
+          <h3>当日卖货折价</h3>
+          <p>按「本人今天已到账总额」分档，卖得越多单价越低。它跨物品累计，不跨天，也不受别人卖货影响，专门压刷金型农场主。</p>
+          <div class="fx-line">40万→0.90　80万→0.80　150万→0.70　地板 0.60</div>
+        </div>
+      </div>
+      <div class="m">
+        <div class="k">07 TAX</div>
+        <div>
+          <h3>税与到手价</h3>
+          <p>乘完所有倍率后扣税，得到真正进钱包的数字。税率 0–100，默认 5%。玩家在箱子信息格里能看到扣了多少。</p>
+          <div class="fx-line">net = afterMultiplier × (1 − tax%)</div>
+        </div>
+      </div>
+    </div>
+    <p class="sim-note" style="margin-top:16px">
+      第 8 层是「每日额度」，它不在单价里乘，而是在结算时拦总量：今天还能卖多少，由当前档位决定。
+      下面这个试算器会把七层价格和额度一起算给你看。
+    </p>
+  </div>
+</section>
+
+<!-- ===== 价格试算 ===== -->
+<section id="calc">
+  <div class="wrap">
+    <div class="who">全参数试算</div>
+    <h2>一笔卖多少，自己改参数算</h2>
+    <p class="sub">
+      这不是只读示例。基础价、销量折价、排名、季节、权限、当日卖货额、税、日上限、产能，全部可以改。
+      改完立刻看到单价拆解、本单到手、额度能撑多少，以及下一批会掉到什么价。
+      按单一种物品的一批结算算；箱里混装多种物品时，额度会按槽位逐种消耗，请分开算。
+    </p>
+
+    <div class="calc">
+      <div class="calc-head">
+        <span>价格计算器 · 所有输入可改</span>
+        <button type="button" class="calc-reset" id="calcReset">恢复示例参数</button>
+      </div>
+
+      <div class="calc-grid">
+        <div class="calc-card">
+          <h3><span class="k">01</span>基础</h3>
+          <div class="calc-fields">
+            <div class="wide">
+              <label>物品名称</label>
+              <input type="text" id="cName" value="洋葱" maxlength="40">
+            </div>
+            <div>
+              <label>基础单价 <span class="cfg">prices.yml</span></label>
+              <input type="number" id="cBase" value="420" min="0" step="1">
+            </div>
+            <div>
+              <label>本次结算件数</label>
+              <input type="number" id="cQty" value="1200" min="1" step="10">
+            </div>
+            <div>
+              <label>结算前今日已卖件数 <span class="cfg">decay</span></label>
+              <input type="number" id="cSold" value="200" min="0" step="10">
+            </div>
+            <div>
+              <label>每分钟产出件数 <span class="cfg">产能估算</span></label>
+              <input type="number" id="cSpeed" value="30" min="1" step="1">
+            </div>
+          </div>
+          <p class="calc-note">「结算前已卖」按你服 decay.count-by 口径填：global 填全服，player 填本人。银星、金星是独立物品 id，基础价填对应变种价，不再乘品质倍率。</p>
+        </div>
+
+        <div class="calc-card">
+          <h3><span class="k">02</span>倍率</h3>
+          <div class="calc-fields">
+            <div>
+              <label>季节预设</label>
+              <div class="calc-presets" id="cSeasonPreset" role="group" aria-label="季节预设">
+                <button type="button" data-v="0.8" class="on" aria-pressed="true">当季 0.80</button>
+                <button type="button" data-v="1.2" aria-pressed="false">反季 1.20</button>
+                <button type="button" data-v="1.0" aria-pressed="false">不分季节</button>
+                <button type="button" data-v="custom" aria-pressed="false">自定义</button>
+              </div>
+            </div>
+            <div>
+              <label>季节倍率 <span class="cfg">season</span></label>
+              <input type="number" id="cSeason" value="0.8" min="0.01" max="5" step="0.01">
+            </div>
+            <div>
+              <label>权限预设</label>
+              <div class="calc-presets" id="cPermPreset" role="group" aria-label="权限预设">
+                <button type="button" data-v="1.0" aria-pressed="false">无加成</button>
+                <button type="button" data-v="1.2" class="on" aria-pressed="true">VIP 1.20</button>
+                <button type="button" data-v="1.5" aria-pressed="false">SVIP 1.50</button>
+                <button type="button" data-v="custom" aria-pressed="false">自定义</button>
+              </div>
+            </div>
+            <div>
+              <label>权限倍率 <span class="cfg">multiplier</span></label>
+              <input type="number" id="cPerm" value="1.2" min="0.01" max="10" step="0.01">
+            </div>
+            <div>
+              <label>排名折扣 <span class="cfg">decay.rank</span></label>
+              <input type="number" id="cRank" value="1.0" min="0" max="1" step="0.01">
+            </div>
+            <div>
+              <label>当日卖货额折价 <span class="cfg">player-volume</span></label>
+              <input type="number" id="cVolume" value="0.9" min="0.01" max="1" step="0.01">
+            </div>
+          </div>
+          <p class="calc-note">排名和卖货额折价直接填你服实际命中的系数：1.0 = 不打折，0.7 = 七折。季节、权限可先用预设，再改成任意值。</p>
+        </div>
+
+        <div class="calc-card">
+          <h3><span class="k">03</span>折价与税</h3>
+          <div class="calc-fields">
+            <div>
+              <label>每件折价率 <span class="cfg">rate-per-item</span></label>
+              <input type="number" id="cRate" value="0.001" min="0" max="1" step="0.0005">
+            </div>
+            <div>
+              <label>折价下限 <span class="cfg">min-factor</span></label>
+              <input type="number" id="cMin" value="0.7" min="0" max="1" step="0.01">
+            </div>
+            <div>
+              <label>税率 % <span class="cfg">tax.percent</span></label>
+              <input type="number" id="cTax" value="5" min="0" max="100" step="0.1">
+            </div>
+            <div>
+              <label>金额小数位 <span class="cfg">rounding</span></label>
+              <input type="number" id="cScale" value="2" min="0" max="6" step="1">
+            </div>
+          </div>
+          <p class="calc-note">销量折价 = max(下限, 1 − 每件折价率 × 结算前已卖件数)。和插件一样，先算系数，再乘整批；税率 0 = 不扣税。</p>
+        </div>
+
+        <div class="calc-card">
+          <h3><span class="k">04</span>额度</h3>
+          <div class="calc-fields">
+            <div>
+              <label>日上限 <span class="cfg">daily-limit</span></label>
+              <input type="number" id="cCap" value="1000000" min="0" step="10000">
+            </div>
+            <div>
+              <label>今日已入账净额 <span class="cfg">当日累计</span></label>
+              <input type="number" id="cUsed" value="400000" min="0" step="10000">
+            </div>
+          </div>
+          <p class="calc-note">日上限填当前档位金额，0 = 不限。今日已入账按税后净额填；单次拦截的口径差异见右侧提示。</p>
+        </div>
+      </div>
+
+      <div class="calc-summary">
+        <div class="calc-stat"><div class="cl">本单毛额</div><div class="cv" id="rGross">—</div><div class="cs">税前、倍率前</div></div>
+        <div class="calc-stat"><div class="cl">税额</div><div class="cv" id="rTax">—</div><div class="cs">按税率扣</div></div>
+        <div class="calc-stat"><div class="cl">到手净额</div><div class="cv" id="rNet">—</div><div class="cs">实际可结算件数</div></div>
+        <div class="calc-stat"><div class="cl">单件净均</div><div class="cv" id="rUnitNet">—</div><div class="cs">摊到每件</div></div>
+      </div>
+
+      <div class="calc-detail">
+        <div class="calc-panel">
+          <h3>价格逐层拆解 · <span class="calc-item" id="rItem">洋葱</span></h3>
+          <div class="table-scroll">
+            <table class="ladder">
+              <thead><tr><th>层级</th><th>系数</th><th>单价 / 均摊</th><th>本单金额</th></tr></thead>
+              <tbody id="rRows"></tbody>
+            </table>
+          </div>
+          <p class="calc-note" id="rRoundNote">按 2 位小数四舍五入；金额按实际可结算件数摊分。</p>
+        </div>
+
+        <div class="calc-panel">
+          <h3>额度与产能</h3>
+          <div class="calc-kv"><span class="k">日上限</span><span class="v" id="rCap">—</span></div>
+          <div class="calc-kv"><span class="k">今日已入账</span><span class="v" id="rUsed">—</span></div>
+          <div class="calc-kv"><span class="k">额度剩余</span><span class="v" id="rRemain">—</span></div>
+          <div class="calc-kv"><span class="k">额度按毛额放行</span><span class="v" id="rMax">—</span></div>
+          <div class="calc-kv"><span class="k">本单实际结算</span><span class="v" id="rAllowed">—</span></div>
+          <div class="calc-kv"><span class="k">超出留在箱里</span><span class="v" id="rOver">—</span></div>
+          <div class="calc-kv"><span class="k">卖完后额度余量</span><span class="v" id="rAfter">—</span></div>
+          <div id="rWarn" class="calc-ok"></div>
+          <div class="calc-divider"></div>
+          <div class="calc-next" id="rNext">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 条件档位 ===== -->
+<section id="tiers">
+  <div class="wrap">
+    <div class="who">v1.7.1 核心</div>
+    <h2>日上限不再只看累计卖出</h2>
+    <p class="sub">
+      原来的「累计卖出 30 万 → 每天 20 万」继续可用。现在每个档位可以再挂 PAPI 变量、权限节点，
+      或者两者混着来。每个档位默认「全部条件满足」，也可以改成「任一满足」。
+    </p>
+
+    <div class="cond-grid">
+      <div class="cond">
+        <div class="tag">TYPE 01</div>
+        <h3>累计卖出</h3>
+        <p>税后到账金额的永久累计。适合纯进度解锁，玩家卖得越多，档位越高。</p>
+        <code>type: lifetime<br>op: "&gt;="<br>value: "300000"</code>
+      </div>
+      <div class="cond">
+        <div class="tag">TYPE 02</div>
+        <h3>PAPI 变量</h3>
+        <p>等级、在线人数、金币余额、任务进度……只要 PlaceholderAPI 能返回，就能拿来当条件。</p>
+        <code>type: papi<br>placeholder: "%player_level%"<br>op: "&gt;="<br>value: "60"</code>
+      </div>
+      <div class="cond">
+        <div class="tag">TYPE 03</div>
+        <h3>权限节点</h3>
+        <p>给 VIP、赞助档、活动资格单独开额度。配合 negate 还能做「没有某权限才受限」。</p>
+        <code>type: permission<br>node: "sellbox.tier.farmer"<br>negate: false</code>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule"><div class="rk">match: all</div><div class="rv">默认。一个档位里的条件全部满足才算过。</div></div>
+      <div class="rule"><div class="rk">match: any</div><div class="rv">任一条件满足就过。适合「等级达到 或 有权限」这种二选一。</div></div>
+      <div class="rule"><div class="rk">selection: best</div><div class="rv">所有满足的档位里，取日上限最高的。VIP 可以直接跳档。</div></div>
+      <div class="rule"><div class="rk">selection: sequential</div><div class="rv">按配置顺序逐档解锁，遇到第一个不满足就停，不能跳档。档位金额请从小到大排。</div></div>
+      <div class="rule"><div class="rk">旧写法</div><div class="rv"><span class="mono">min-total: 300000</span> 仍然有效，等价于 <span class="mono">lifetime &gt;= 300000</span>，不用重写旧配置。</div></div>
+      <div class="rule"><div class="rk">离线玩家</div><div class="rv">权限条件一律判不满足，避免离线结算蹭到高额度；PAPI 能解析就解析。</div></div>
+      <div class="rule"><div class="rk">缓存</div><div class="rv"><span class="mono">condition-cache-ms</span>，默认 1000 毫秒。PAPI 变量值变化最多延迟这么久生效；权限每次实时判定。</div></div>
+      <div class="rule"><div class="rk">禁止递归</div><div class="rv">条件里不能引用 <span class="mono">%sellbox_*%</span> 自身变量，插件会直接判失败。</div></div>
+    </div>
+
+<pre><i># config.yml · daily-limit 段（金额请按你服经济改）</i>
+<b>daily-limit:</b>
+  amount: <b>50000</b>                <span class="cm"># 兜底值，0 = 不限</span>
+  selection: <b>best</b>              <span class="cm"># best / sequential</span>
+  condition-cache-ms: <b>1000</b>
+  tiers:
+    - name: "新手"
+      amount: <b>50000</b>
+    - name: "熟练农户"
+      amount: <b>200000</b>
+      conditions:
+        - {type: <b>lifetime</b>, op: "&gt;=", value: "<b>300000</b>"}
+    - name: "老农"
+      amount: <b>500000</b>
+      conditions:
+        - {type: <b>lifetime</b>, op: "&gt;=", value: "<b>1500000</b>"}
+    - name: "农场主"
+      amount: <b>800000</b>
+      match: <b>any</b>
+      conditions:
+        - {type: <b>papi</b>, placeholder: "<b>%player_level%</b>", op: "&gt;=", value: "<b>60</b>"}
+        - {type: <b>permission</b>, node: "<b>sellbox.tier.farmer</b>"}
+    - name: "大户"
+      amount: <b>1000000</b>
+      conditions:
+        - {type: <b>lifetime</b>, op: "&gt;=", value: "<b>4000000</b>"}
+    - name: "SVIP"
+      amount: <b>1500000</b>
+      conditions:
+        - "permission:sellbox.tier.svip"
+        - "lifetime&gt;=8000000"</pre>
+
+    <p class="sim-note" style="margin-top:14px">
+      紧凑写法一行一个条件：<span class="mono">"papi:%player_level%&gt;=60"</span>、
+      <span class="mono">"permission:!sellbox.tier.blocked"</span>。
+      数字比较用 <span class="mono">&gt;= &gt; &lt;= &lt; == !=</span>；文本用
+      <span class="mono">contains / !contains / startsWith / endsWith / matches</span>。
+      权限节点前加 <span class="mono">!</span> 表示「没有这个权限才满足」。
+    </p>
+
+    <div class="who" style="margin-top:44px">玩家档位诊断</div>
+    <h2 style="font-size:22px">/sellbox tiers &lt;玩家&gt; 长这样</h2>
+    <p class="sub">不用猜。每个条件的实际值、失败原因、下一档要求都在里面。</p>
+<pre>===== 额度档位：TestPlayer =====
+累计卖出: 300,000
+当前档位: 熟练农户 (日上限 200,000)
+✔ 1. 新手 (50,000/日)
+✔ 2. 熟练农户 (200,000/日)
+  · 累计卖出 &gt;= 30万 → 30万
+✘ 3. 老农 (500,000/日)
+  · 累计卖出 &gt;= 150万 → 30万 (未达到门槛)
+下一档: 500,000/日 需要 累计卖出 &gt;= 150万</pre>
+
+    <p class="sim-note" style="margin-top:14px">
+      PAPI 变量本身有没有值，先用 <span class="mono">/papi parse me %player_level%</span> 确认。
+      返回原样 <span class="mono">%player_level%</span> 说明变量没注册，写进条件里永远不会满足。
+    </p>
+
+    <div class="who" style="margin-top:44px">给菜单/计分板用</div>
+    <h2 style="font-size:22px">新增的 PAPI 占位符</h2>
+    <div class="table-scroll">
+      <table class="cmd-table papi-table">
+        <thead><tr><th>变量</th><th>返回</th></tr></thead>
+        <tbody>
+          <tr><td class="cmd">%sellbox_tier%</td><td class="desc">当前档位序号，1 起；0 表示兜底额度。</td></tr>
+          <tr><td class="cmd">%sellbox_tier_name%</td><td class="desc">档位名。没写 name 就返回「第 N 档」。</td></tr>
+          <tr><td class="cmd">%sellbox_tier_amount%</td><td class="desc">当前日上限，纯数字，无千分位，方便接其他插件的数学比较。</td></tr>
+          <tr><td class="cmd">%sellbox_next_tier%</td><td class="desc">下一档序号；已是最高档返回空。</td></tr>
+          <tr><td class="cmd">%sellbox_next_tier_name%</td><td class="desc">下一档名称。</td></tr>
+          <tr><td class="cmd">%sellbox_next_tier_amount%</td><td class="desc">下一档日上限。</td></tr>
+          <tr><td class="cmd">%sellbox_next_tier_requirement%</td><td class="desc">下一档条件的中文描述，可直接放进菜单 lore。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 判定模拟 ===== -->
+<section id="sim">
+  <div class="wrap">
+    <div class="who">动手算</div>
+    <h2>把玩家状态填进去，看档位怎么选</h2>
+    <p class="sub">
+      下面这组档位来自示例配置，可选档已按金额从小到大排好。切换 best / sequential，能直观看到「跳档」和「逐档解锁」的区别。
+      数字只是演示，换成你服的真实档位再判断。
+    </p>
+
+    <div class="sim">
+      <div class="sim-head">
+        <span>档位判定模拟 · 所有输入都可以改</span>
+        <span class="mono" id="simMode">best</span>
+      </div>
+      <div class="sim-body">
+        <div class="sim-form">
+          <div>
+            <label>累计卖出净额（lifetime）</label>
+            <input type="number" id="life" value="300000" min="0" step="10000">
+          </div>
+          <div class="row2">
+            <div>
+              <label>玩家等级</label>
+              <input type="number" id="level" value="60" min="0" max="1000" step="1">
+            </div>
+            <div>
+              <label>今日已卖（净额）</label>
+              <input type="number" id="used" value="80000" min="0" step="10000">
+            </div>
+          </div>
+          <div>
+            <label>选择模式</label>
+            <select id="mode">
+              <option value="best">best · 取满足的最高档</option>
+              <option value="sequential">sequential · 逐档解锁</option>
+            </select>
+          </div>
+          <div class="chk"><input type="checkbox" id="farmer"><label for="farmer" style="margin:0">拥有权限 <span class="mono">sellbox.tier.farmer</span></label></div>
+          <div class="chk"><input type="checkbox" id="svip"><label for="svip" style="margin:0">拥有权限 <span class="mono">sellbox.tier.svip</span></label></div>
+          <div class="chk"><input type="checkbox" id="offline"><label for="offline" style="margin:0">玩家当前离线</label></div>
+          <div class="sim-note">
+            权限条件对离线玩家一律不通过；<span class="mono">%player_level%</span> 假设离线也能返回。
+          </div>
+        </div>
+
+        <div class="sim-out">
+          <div class="chips">
+            <div class="chip"><div class="cl">当前档位</div><div class="cv small" id="oName">—</div></div>
+            <div class="chip"><div class="cl">日上限</div><div class="cv" id="oLimit">—</div></div>
+            <div class="chip"><div class="cl">今日剩余</div><div class="cv" id="oLeft">—</div></div>
+            <div class="chip"><div class="cl">下一档</div><div class="cv small" id="oNext">—</div></div>
+          </div>
+
+          <div class="table-scroll" style="margin-top:0">
+            <table class="tier-table">
+              <thead><tr><th>#</th><th>档位</th><th>日上限</th><th>判定</th><th>条件与实际值</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <div class="sim-note-out" id="oNote"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 部署 ===== -->
+<section id="deploy">
+  <div class="wrap">
+    <div class="who">安装</div>
+    <h2>装起来大概十分钟</h2>
+    <p class="sub">一个 jar 加一段 config。钱走 Vault / XConomy，不动你现有的经济插件；CraftEngine 只影响自定义方块和自定义物品识别。</p>
+
+    <div class="table-scroll">
+      <table class="matrix">
+        <thead><tr><th>服务端</th><th>Java 21</th><th>Java 25</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Paper 1.21.x</td><td class="ok">✅ 已实测</td><td class="ok">✅ 预期可用</td><td>1.7.1 实测为 1.21.4 + Java 21；Java 25 未单独跑服务端。</td></tr>
+          <tr><td class="mono">Paper 26.x</td><td class="bad">❌ 服务端起不来</td><td class="ok">✅ 已启动验证</td><td>26.2 build 127 + Java 25 启动成功；1.7.1 修了收据书 BookMeta API。仅验证启动与收据书生成。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sim-note matrix-note">1.21.x 搭配 Java 25 为预期可用；26.2 已在 build 127 + Java 25 启动验证，但未做完整玩家 GUI 回归。插件 jar 本身始终是 Java 21 字节码。</p>
+
+    <div class="deploy">
+      <div class="d"><div class="n">01</div><h3>换 jar</h3><p>用 <span class="mono">SellBox-1.7.1.jar</span> 替换旧 jar。只换 jar，不要整目录覆盖配置；首次启动会生成 config.yml、prices.yml、messages_zh_CN.yml 和 sellbox.db。</p></div>
+      <div class="d"><div class="n">02</div><h3>只改 daily-limit</h3><p>别整目录覆盖。把旧 config 里的 <span class="mono">daily-limit</span> 段换成新版，其它价格、衰减、税收、季节参数保持原样。</p></div>
+      <div class="d"><div class="n">03</div><h3>用 tiers 验证</h3><p>给自己或测试号设置累计金额，打 <span class="mono">/sellbox tiers &lt;玩家&gt;</span>，确认每一档的条件判定和预期一致，再开放给玩家。</p></div>
+    </div>
+
+    <div class="deps">
+      <span class="dep">Paper 1.21.4+ / 26.2</span>
+      <span class="dep">插件 Java 21 字节码；26.2 需 Java 25</span>
+      <span class="dep">Vault / XConomy</span>
+      <span class="dep">PlaceholderAPI（条件档位需要）</span>
+      <span class="dep">CraftEngine（可选）</span>
+      <span class="dep">SQLite（内置）</span>
+    </div>
+
+    <div class="notice">
+      <b>升级只动两个东西：</b>jar 和 <span class="mono">config.yml</span> 的 <span class="mono">daily-limit</span> 段。
+      <span class="mono">messages_zh_CN.yml</span> 不用替换——新文案有内置默认值，旧文件缺 key 时会自动回退。
+      PAPI 扩展只在启动时注册一次，涉及 PAPI 的改动（第一次装 PAPI、换 PAPI 版本）建议整服重启，<span class="mono">/sellbox reload</span> 不会重新注册。
+    </div>
+
+<pre><i># 最小可用：旧配置照抄，只加 selection 和缓存</i>
+<b>daily-limit:</b>
+  amount: 50000
+  reset-at: "00:00"
+  timezone: Asia/Shanghai
+  on-exceed: stop
+  selection: <b>best</b>
+  condition-cache-ms: <b>1000</b>
+  tiers:
+    - {min-total: 0,       amount: 50000}
+    - {min-total: 300000,  amount: 200000}
+    - {min-total: 1500000, amount: 500000}
+    - {min-total: 4000000, amount: 1000000}
+
+<i># 想加 PAPI / 权限档，再看上一节的完整写法</i></pre>
+
+    <p class="sim-note" style="margin-top:14px">
+      <span class="mono">sequential</span> 模式请保证档位金额从小到大排列；否则低金额档位排在高金额档位后面时，会永远轮不到。
+      纯进度服建议 sequential，有赞助档的服建议 best。
+    </p>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="who">问答</div>
+    <h2>装之前你大概会问的</h2>
+    <div class="faq">
+      <details>
+        <summary>我服是 Paper 26.2，能直接用吗？<span class="pm">+</span></summary>
+        <p>能，用 <span class="mono">1.7.1</span>，服务端必须 Java 25 启动。26.2 的 <span class="mono">BookMeta.pages(List)</span> 返回类型变了，1.7.0 开收据书会 <span class="mono">NoSuchMethodError</span>；1.7.1 改用 <span class="mono">addPages(Component...)</span>，已在 26.2 build 127 启动并生成两页收据验证。插件仍是 Java 21 字节码，Java 25 可加载。</p>
+      </details>
+      <details>
+        <summary>旧的四档配置要重写吗？<span class="pm">+</span></summary>
+        <p>不用。<span class="mono">min-total</span> 继续有效，等价于 <span class="mono">lifetime &gt;= 数值</span>。只想用原来的累计解锁，就在 daily-limit 里加一行 <span class="mono">selection: best</span> 即可。</p>
+      </details>
+      <details>
+        <summary>PAPI 条件写了，但永远不通过？<span class="pm">+</span></summary>
+        <p>先在控制台打 <span class="mono">/papi parse me %你的变量%</span>。返回原样说明变量没注册或扩展没装；返回非数字（比如 <span class="mono">Lv.60</span>）时，用 <span class="mono">&gt;=</span> 这类数字运算符会判失败，改用 <span class="mono">contains</span> 或换一个纯数字变量。</p>
+      </details>
+      <details>
+        <summary>为什么离线玩家的权限档不生效？<span class="pm">+</span></summary>
+        <p>有意为之。离线时无法可靠判断权限，如果放行，离线结算会蹭到高额度。权限条件对离线玩家一律判不满足；累计卖出和能解析的 PAPI 条件不受影响。</p>
+      </details>
+      <details>
+        <summary>best 和 sequential 到底怎么选？<span class="pm">+</span></summary>
+        <p>有 VIP/赞助档、允许直接跳档：用 <span class="mono">best</span>。纯农业进度、必须一档一档解锁：用 <span class="mono">sequential</span>。后者要求档位金额从小到大排。</p>
+      </details>
+      <details>
+        <summary>改完配置多久生效？<span class="pm">+</span></summary>
+        <p><span class="mono">/sellbox reload</span> 后立刻重算档位。玩家侧的 PAPI 变量值有 <span class="mono">condition-cache-ms</span> 缓存，默认 1 秒，最多延迟这么久；权限每次实时判定。</p>
+      </details>
+      <details>
+        <summary>会跟我现有的经济插件打架吗？<span class="pm">+</span></summary>
+        <p>不会。发钱只调 Vault 的 deposit 或 XConomy 的接口，不接管货币、不改余额。哪天换经济插件，这边不用动。</p>
+      </details>
+      <details>
+        <summary>能和商店插件一起用吗？<span class="pm">+</span></summary>
+        <p>能，但建议只让它负责卖。商店管买，种子、肥料、设备那些；出货箱管卖，作物回收。两边都做买卖，价格会互相打脸。</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="box">
+      <h2>它能干什么，不能干什么</h2>
+      <p>
+        它能替掉「背一背包跑去商店点卖出」这一段，能给价格加上季节、供需和权限差异，
+        能按累计卖出、PAPI 变量、权限节点组合出任意档位，也能给你一套查账工具。
+        它不会替你平衡经济。价格和档位是你定的，定歪了它只会把歪放得更大，而且放得很快。
+      </p>
+    </div>
+    <div class="foot">
+      <span>SellBox v1.7.1 · Paper 农业出货箱</span>
+      <span>作者 yuuka / Tako</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const DEFAULTS = {
+    cName:"洋葱", cBase:420, cQty:1200, cSold:200, cSpeed:30,
+    cSeason:"0.8", cPerm:"1.2",
+    cRank:"1.0", cVolume:"0.9", cRate:"0.001", cMin:"0.7",
+    cTax:"5", cScale:"2", cCap:"1000000", cUsed:"400000"
+  };
+
+  const $ = function(id){ return document.getElementById(id); };
+  const clamp = function(n, lo, hi){ return Math.min(hi, Math.max(lo, n)); };
+  const num = function(id, fallback){
+    const v = parseFloat($(id).value);
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const int = function(id, fallback, min){
+    return Math.max(min, Math.floor(num(id, fallback)));
+  };
+  const round = function(n, d){
+    const p = Math.pow(10, d);
+    return Math.round(n * p) / p;
+  };
+  const fmt = function(n, d){
+    const v = Math.abs(n) < 1e-9 ? 0 : n;
+    return Number(v).toLocaleString("zh-CN", {
+      minimumFractionDigits: d, maximumFractionDigits: d
+    });
+  };
+  const money = function(n, d){ return fmt(n, d); };
+
+  function read(){
+    const base = Math.max(0, num("cBase", 0));
+    const qty = int("cQty", 1, 1);
+    const prior = int("cSold", 0, 0);
+    const speed = Math.max(1, num("cSpeed", 1));
+    const seasonRaw = num("cSeason", 1);
+    const season = seasonRaw <= 0 ? 1 : seasonRaw;
+    const permRaw = num("cPerm", 1);
+    const perm = permRaw <= 0 ? 1 : permRaw;
+    const rank = clamp(num("cRank", 1), 0, 1);
+    const volumeRaw = num("cVolume", 1);
+    const volume = volumeRaw <= 0 ? 1 : clamp(volumeRaw, 0.01, 1);
+    const rate = clamp(num("cRate", 0), 0, 1);
+    const minFactor = clamp(num("cMin", 0), 0, 1);
+    const taxPct = clamp(num("cTax", 0), 0, 100);
+    const scale = Math.round(clamp(num("cScale", 2), 0, 6));
+    const cap = Math.max(0, num("cCap", 0));
+    const used = Math.max(0, num("cUsed", 0));
+    return {base, qty, prior, speed, season, perm, rank, volume, rate,
+            minFactor, taxPct, scale, cap, used};
+  }
+
+  function render(){
+    const d = read();
+    const priceD = Math.max(2, d.scale);
+    const decay = Math.max(d.minFactor, 1 - d.rate * d.prior);
+    const unit = round(d.base * decay * d.rank * d.season, d.scale);
+
+    const remaining = d.cap > 0 ? Math.max(0, d.cap - d.used) : Infinity;
+    const maxItems = unit > 0
+      ? (d.cap > 0 ? Math.floor(remaining / unit + 1e-9) : d.qty)
+      : 0;
+    const allowed = unit > 0 ? Math.max(0, Math.min(d.qty, maxItems)) : 0;
+    const over = Math.max(0, d.qty - allowed);
+    const all = allowed;
+    const gross = round(unit * all, d.scale);
+    const afterPerm = round(gross * d.perm, d.scale);
+    const afterVolume = round(gross * d.perm * d.volume, d.scale);
+    const tax = round(afterVolume * d.taxPct / 100, d.scale);
+    const net = round(afterVolume - tax, d.scale);
+    const unitNet = all > 0 ? net / all : 0;
+
+    const fullGross = round(unit * d.qty, d.scale);
+    const fullAfterPerm = round(fullGross * d.perm, d.scale);
+    const fullAfterVolume = round(fullGross * d.perm * d.volume, d.scale);
+    const fullTax = round(fullAfterVolume * d.taxPct / 100, d.scale);
+    const fullNet = round(fullAfterVolume - fullTax, d.scale);
+
+    $("rGross").textContent = money(gross, priceD);
+    $("rTax").textContent = money(tax, priceD);
+    $("rNet").textContent = money(net, priceD);
+    $("rUnitNet").textContent = money(unitNet, priceD);
+
+    const name = ($("cName").value || "").trim() || "未命名物品";
+    $("rItem").textContent = name;
+    $("rRoundNote").textContent = "金额按 " + d.scale + " 位小数四舍五入；表内金额按实际可结算件数摊分。";
+
+    const u1 = d.base;
+    const u2 = d.base * decay;
+    const u3 = d.base * decay * d.rank;
+    const u4 = unit;
+    const rows = [
+      ["01 基础价", "—", u1, round(u1 * all, d.scale), ""],
+      ["02 销量折价", "×" + fmt(decay, 3), u2, round(u2 * all, d.scale), ""],
+      ["03 排名折扣", "×" + fmt(d.rank, 3), u3, round(u3 * all, d.scale), ""],
+      ["04 季节倍率", "×" + fmt(d.season, 3), u4, gross, ""],
+      ["05 权限倍率", "×" + fmt(d.perm, 3), all > 0 ? afterPerm / all : 0, afterPerm, ""],
+      ["06 当日卖货额", "×" + fmt(d.volume, 3), all > 0 ? afterVolume / all : 0, afterVolume, ""],
+      ["07 税", "−" + fmt(d.taxPct, 2) + "%", all > 0 ? -tax / all : 0, -tax, "minus"],
+      ["08 到手净额", "—", unitNet, net, "total"]
+    ];
+    const html = rows.map(function(r){
+      const minus = r[3] < 0 ? "−" : "";
+      return '<tr class="' + r[4] + '"><td class="nm">' + r[0] + '</td><td class="fac">' + r[1] +
+        '</td><td class="num">' + (r[2] < 0 ? "−" : "") + money(Math.abs(r[2]), priceD) + '</td><td class="num' +
+        (r[3] < 0 ? ' minus' : '') + '">' + minus + money(Math.abs(r[3]), priceD) + '</td></tr>';
+    }).join("");
+    $("rRows").innerHTML = html;
+
+    $("rCap").textContent = d.cap > 0 ? money(d.cap, 0) : "不限";
+    $("rUsed").textContent = money(d.used, 0);
+    $("rRemain").textContent = d.cap > 0 ? money(remaining, 0) : "不限";
+    $("rMax").textContent = unit > 0 ? (d.cap > 0 ? fmt(maxItems, 0) + " 件" : "不限") : "0 件";
+    $("rAllowed").textContent = fmt(allowed, 0) + " 件";
+    $("rOver").textContent = fmt(over, 0) + " 件";
+    $("rAfter").textContent = d.cap > 0 ? money(d.cap - d.used - net, priceD) : "不限";
+
+    const warnings = [];
+    if (d.base <= 0) warnings.push("基础价为 0，单价和额度拦截都无法按正常物品计算。");
+    if (d.base > 0 && unit <= 0) warnings.push("当前折价系数为 0，单价为 0；插件会在结算时跳过这种物品，不会产生产出。");
+    if (d.cap > 0 && maxItems === 0 && unit > 0) warnings.push("今日额度已经用完；按当前单价，本单可结算 0 件。");
+    if (over > 0) warnings.push("本单请求 " + fmt(d.qty, 0) + " 件，插件按税前毛额最多放行 " + fmt(maxItems, 0) +
+      " 件；超出的 " + fmt(over, 0) + " 件留在箱里，不会结算。整批本应到手 " + money(fullNet, priceD) + "。");
+    if (d.cap > 0 && net > remaining + 1e-6) warnings.push("按净额账本，本单到账 " + money(net, priceD) +
+      " 会超过剩余额度 " + money(remaining, priceD) + "；插件单次拦截用的是税前毛额，因此这笔仍可能被放行。");
+    if (d.cap === 0) warnings.push("日上限为 0 = 不限额度；本单 " + fmt(d.qty, 0) + " 件全部可结算。");
+    const w = $("rWarn");
+    if (warnings.length) {
+      w.className = "calc-warn";
+      w.innerHTML = warnings.map(function(x){ return "<div>· " + x + "</div>"; }).join("");
+    } else {
+      w.className = "calc-ok";
+      w.textContent = "额度足够，本单 " + fmt(allowed, 0) + " 件可全部结算；卖完后按净额账本还剩 " +
+        money(d.cap - d.used - net, priceD) + "。";
+    }
+
+    const minutes = allowed / d.speed;
+    const hourly = unitNet * d.speed * 60;
+    const capMinutes = d.cap > 0 && unit > 0 ? maxItems / d.speed : null;
+    const nextPrior = d.prior + allowed;
+    const nextDecay = Math.max(d.minFactor, 1 - d.rate * nextPrior);
+    const nextUnit = round(d.base * nextDecay * d.rank * d.season, d.scale);
+    const nextNet = round(nextUnit * d.perm * d.volume * (1 - d.taxPct / 100), d.scale);
+    const floorHit = (1 - d.rate * nextPrior) < d.minFactor ? "，已贴折价下限" : "";
+
+    let next = "本单实际 " + fmt(allowed, 0) + " 件，约 " + fmt(minutes, 1) + " 分钟；按当前单价折算时薪约 <b>" +
+      money(hourly, 0) + "</b> 金币。";
+    if (d.cap > 0 && unit > 0) {
+      next += "<br>按当前单价，额度余量最多还能卖 <b>" + fmt(maxItems, 0) + "</b> 件，约 " +
+        fmt(capMinutes, 1) + " 分钟。";
+    }
+    next += "<br>卖完这一批后累计 <b>" + fmt(nextPrior, 0) + "</b> 件，下一批单价 <b>" + money(nextUnit, priceD) +
+      "</b>，单件到手约 <b>" + money(nextNet, priceD) + "</b>（折价系数 " + fmt(nextDecay, 3) + floorHit + "）。";
+    $("rNext").innerHTML = next;
+  }
+
+  function markPreset(groupId, value){
+    const group = $(groupId);
+    if (!group) return;
+    group.querySelectorAll("button[data-v]").forEach(function(btn){
+      const on = btn.dataset.v === String(value);
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function initPreset(groupId, inputId){
+    const group = $(groupId);
+    const input = $(inputId);
+    if (!group || !input) return;
+    group.addEventListener("click", function(e){
+      const btn = e.target.closest ? e.target.closest("button[data-v]") : null;
+      if (!btn || !group.contains(btn)) return;
+      const value = btn.dataset.v;
+      if (value === "custom") {
+        markPreset(groupId, "custom");
+        input.focus();
+        input.select();
+        return;
+      }
+      input.value = value;
+      render();
+      markPreset(groupId, value);
+    });
+    input.addEventListener("input", function(){
+      const value = input.value;
+      const match = Array.prototype.some.call(
+        group.querySelectorAll("button[data-v]"),
+        function(btn){ return btn.dataset.v === value; }
+      );
+      markPreset(groupId, match ? value : "custom");
+    });
+  }
+
+  document.querySelectorAll(".calc input").forEach(function(el){
+    el.addEventListener("input", render);
+    el.addEventListener("change", render);
+  });
+  initPreset("cSeasonPreset", "cSeason");
+  initPreset("cPermPreset", "cPerm");
+
+  $("calcReset").addEventListener("click", function(){
+    Object.keys(DEFAULTS).forEach(function(id){
+      const el = $(id);
+      if (el) el.value = DEFAULTS[id];
+    });
+    markPreset("cSeasonPreset", DEFAULTS.cSeason);
+    markPreset("cPermPreset", DEFAULTS.cPerm);
+    render();
+  });
+
+  render();
+})();
+</script>
+
+
+<script>
+const TIERS = [
+  {name:"新手",     amount:50000,  conds:[]},
+  {name:"熟练农户", amount:200000, conds:[{t:"lifetime", op:">=", v:300000}]},
+  {name:"老农",     amount:500000, conds:[{t:"lifetime", op:">=", v:1500000}]},
+  {name:"农场主",   amount:800000, any:true, conds:[
+      {t:"papi", ph:"%player_level%", op:">=", v:60},
+      {t:"perm", node:"sellbox.tier.farmer"}
+  ]},
+  {name:"大户",     amount:1000000, conds:[{t:"lifetime", op:">=", v:4000000}]},
+  {name:"SVIP",     amount:1500000, conds:[
+      {t:"perm", node:"sellbox.tier.svip"},
+      {t:"lifetime", op:">=", v:8000000}
+  ]}
+];
+const FALLBACK = 50000;
+
+const el = id => document.getElementById(id);
+const inputs = {
+  life:el("life"), level:el("level"), used:el("used"), mode:el("mode"),
+  farmer:el("farmer"), svip:el("svip"), offline:el("offline")
+};
+
+const fmt = n => Math.round(n).toLocaleString("zh-CN");
+const money = n => {
+  if (n >= 1e8) return (n/1e8).toFixed(2).replace(/\.?0+$/,"") + "亿";
+  if (n >= 1e4) return (n/1e4).toFixed(2).replace(/\.?0+$/,"") + "万";
+  return fmt(n);
+};
+const num = (input, def) => {
+  const v = parseFloat(input.value);
+  return Number.isFinite(v) ? Math.max(0, v) : def;
+};
+
+function evalCond(c, s){
+  if (c.t === "lifetime"){
+    return {pass:s.life >= c.v, actual:money(s.life), need:"累计卖出 " + c.op + " " + money(c.v),
+            reason:s.life >= c.v ? "" : "未达到门槛"};
+  }
+  if (c.t === "papi"){
+    return {pass:s.level >= c.v, actual:"%player_level% = " + s.level,
+            need:c.ph + " " + c.op + " " + c.v,
+            reason:s.level >= c.v ? "" : "未达到门槛"};
+  }
+  const has = c.node === "sellbox.tier.farmer" ? s.farmer : s.svip;
+  if (s.offline){
+    return {pass:false, actual:"离线", need:"拥有权限 " + c.node, reason:"玩家不在线"};
+  }
+  return {pass:has, actual:has ? "有权限" : "无权限", need:"拥有权限 " + c.node,
+          reason:has ? "" : "缺少该权限"};
+}
+
+function condText(c){
+  if (c.t === "lifetime") return "累计卖出 " + c.op + " " + money(c.v);
+  if (c.t === "papi") return c.ph + " " + c.op + " " + c.v;
+  return "拥有权限 " + c.node;
+}
+
+function evaluateTier(tier, s){
+  if (!tier.conds.length) return {pass:true, details:[]};
+  const details = tier.conds.map(c => {
+    const r = evalCond(c, s);
+    return {text:condText(c), actual:r.actual, pass:r.pass, reason:r.reason};
+  });
+  const passed = tier.any ? details.some(d => d.pass) : details.every(d => d.pass);
+  return {pass:passed, details:details};
+}
+
+function compute(){
+  const s = {
+    life:num(inputs.life, 0),
+    level:num(inputs.level, 0),
+    used:num(inputs.used, 0),
+    farmer:inputs.farmer.checked,
+    svip:inputs.svip.checked,
+    offline:inputs.offline.checked
+  };
+  const sequential = inputs.mode.value === "sequential";
+  el("simMode").textContent = sequential ? "sequential" : "best";
+
+  const rows = [];
+  let chosen = -1, best = 0, blocked = false;
+
+  TIERS.forEach((tier, i) => {
+    if (blocked){
+      rows.push({tier, idx:i, pass:false, skipped:true, details:[]});
+      return;
+    }
+    const r = evaluateTier(tier, s);
+    rows.push({tier, idx:i, pass:r.pass, skipped:false, details:r.details});
+    if (sequential){
+      if (!r.pass){ blocked = true; return; }
+      if (r.pass && tier.amount > best){ chosen = i; best = tier.amount; }
+    } else if (r.pass && tier.amount > best){
+      chosen = i; best = tier.amount;
+    }
+  });
+
+  const curName = chosen >= 0 ? TIERS[chosen].name : "兜底额度";
+  const curAmount = chosen >= 0 ? TIERS[chosen].amount : FALLBACK;
+  const left = Math.max(0, curAmount - s.used);
+
+  el("oName").textContent = curName + (chosen >= 0 ? " · 第 " + (chosen + 1) + " 档" : "");
+  el("oLimit").textContent = fmt(curAmount);
+  el("oLeft").textContent = fmt(left);
+  const next = TIERS.find(t => t.amount > curAmount);
+  el("oNext").textContent = next ? next.name + " · " + money(next.amount) + "/日" : "已是最高档";
+
+  const tbody = el("rows");
+  tbody.innerHTML = "";
+  rows.forEach(r => {
+    const tr = document.createElement("tr");
+    if (r.idx === chosen) tr.className = "cur";
+    let status = "";
+    if (r.skipped) status = '<span class="status st-skip">跳过</span>';
+    else if (r.idx === chosen) status = '<span class="status st-cur">当前档位</span>';
+    else if (r.pass) status = '<span class="status st-pass">通过</span>';
+    else status = '<span class="status st-fail">未通过</span>';
+
+    const cds = r.skipped
+      ? '<span>前档未通过，sequential 模式不再往下判定</span>'
+      : (r.details.length
+          ? (r.tier.any ? '<span class="cond-hint">match: any · 满足任一条件即可</span>' : '') +
+            r.details.map(d =>
+              '<span>' + (d.pass ? "✓ " : "✗ ") + d.text +
+              ' <span style="color:#6a775c">→ ' + d.actual + (d.reason ? "（" + d.reason + "）" : "") + '</span></span>'
+            ).join("")
+          : '<span style="color:#6a775c">无条件，任何人都满足</span>');
+
+    tr.innerHTML =
+      '<td class="amt">' + (r.idx + 1) + '</td>' +
+      '<td class="nm">' + r.tier.name + '</td>' +
+      '<td class="amt">' + fmt(r.tier.amount) + '</td>' +
+      '<td>' + status + '</td>' +
+      '<td class="cd">' + cds + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  const note = el("oNote");
+  if (sequential && rows.some(r => r.skipped)){
+    note.textContent = "sequential 模式在前面的档位断掉了，后面的档位不再判定。这就是「不能跳档」和 best 的区别。";
+  } else if (!sequential && chosen >= 0){
+    note.textContent = "best 模式在所有满足条件的档位里，选了日上限最高的「" + curName + "」。把选择模式切到 sequential，再看一次差别。";
+  } else {
+    note.textContent = "所有档位都没通过，退回 daily-limit.amount 的兜底额度。记得留一个无条件档，避免玩家无额度可用。";
+  }
+}
+
+Object.values(inputs).forEach(input => {
+  input.addEventListener("input", compute);
+  input.addEventListener("change", compute);
+});
+
+document.querySelectorAll(".tab").forEach(tb => {
+  tb.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("on"));
+    tb.classList.add("on");
+    document.getElementById("p-" + tb.dataset.p).classList.add("on");
+  });
+});
+
+document.querySelectorAll("details").forEach(d => {
+  d.addEventListener("toggle", () => {
+    if (d.open){
+      document.querySelectorAll("details").forEach(o => { if (o !== d) o.open = false; });
+    }
+  });
+});
+
+compute();
+</script>
+</body>
+</html>
